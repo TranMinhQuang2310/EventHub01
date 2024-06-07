@@ -75,7 +75,7 @@ android {
 
     namespace "com.eventhub"
     defaultConfig {
-        applicationId "com.eventhub01"
+        applicationId "com.eventhub"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
