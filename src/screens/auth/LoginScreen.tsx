@@ -51,7 +51,7 @@ const LoginScreen = ({navigation}: any) => {
           'post',
         );
 
-        //Sau khi click đăng nhập xong => Có accesstoken => Gọi hàm addAuth từ file authReducer.ts
+        //Sau khi click đăng nhập xong => Có accesstoken tu` backend => Gọi hàm addAuth từ file authReducer.ts
         dispatch(addAuth(res.data));
 
         //=> Lưu dữ liệu người dùng vào Local

@@ -3,6 +3,7 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {authSelector, removeAuth} from '../../redux/reducers/authReducer';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -17,9 +18,11 @@ const HomeScreen = () => {
         title="Logout"
         //Gọi hàm removeAuth từ file authReducer.ts => Click Logout về màn hình OnBoardingScreen
         onPress={async () => {
-          //Giữ lại tên email trong Local sau khi click Logout
+          //Giữ lại tên email được đăng nhập bình thường trong Local sau khi click Logout
           //await AsyncStorage.setItem('auth',auth.email)
           await AsyncStorage.clear();
+          //Giữ lại tên email được đăng nhập = google trong Local sau khi click Logout
+          await GoogleSignin.signOut();
           dispatch(removeAuth({}));
         }}
       />
