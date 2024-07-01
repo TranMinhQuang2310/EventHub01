@@ -32,7 +32,7 @@ const RowComponent = (props: Props) => {
       style={localStyle}
       onPress={onPress}
       //Bấm vào không bị nháy
-      activeOpacity={0.9}>
+      activeOpacity={0.5}>
       {children}
     </TouchableOpacity>
   ) : (

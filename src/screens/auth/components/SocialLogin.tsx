@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {
   ButtonComponent,
@@ -47,6 +47,7 @@ const SocialLogin = () => {
         user,
         'post',
       );
+
       console.log(res.data);
       //Sau khi click đăng nhập xong => Có accesstoken tu` backend => Gọi hàm addAuth từ file authReducer.ts
       dispatch(addAuth(res.data));
@@ -83,10 +84,11 @@ const SocialLogin = () => {
         type="primary"
         color={appColors.white}
         textColor={appColors.text}
-        text="Login with Google"
+        text="Login with Facebook"
         textFont={fontFamilies.regular}
         icon={<Facebook />}
         iconFlex="left"
+        onPress={() => Alert.alert('Tính năng đang phát triển')}
       />
     </SectionComponent>
   );

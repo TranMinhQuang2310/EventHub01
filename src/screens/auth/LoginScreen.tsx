@@ -24,6 +24,7 @@ const LoginScreen = ({navigation}: any) => {
   const [password, setPassword] = useState('');
   const [isRemember, setIsRemember] = useState(true);
   const [isDisable, setIsDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -42,6 +43,7 @@ const LoginScreen = ({navigation}: any) => {
     const emailValidation = Validate.email(email);
     //Nếu nhập đúng format email
     if (emailValidation) {
+      setIsLoading(true);
       try {
         //Đẩy dữ liệu xuống DB sau khi click Sign In
         const res = await authenticationAPI.HandleAuthentication(
@@ -60,8 +62,12 @@ const LoginScreen = ({navigation}: any) => {
           //Nếu có click "Remember me" => Không cho đăng nhập lại lần nữa
           isRemember ? JSON.stringify(res.data) : email,
         );
+
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
+
+        setIsLoading(false);
       }
     } else {
       //Nếu nhập sai format Email
@@ -140,7 +146,7 @@ const LoginScreen = ({navigation}: any) => {
           text="SIGN IN"
           type="primary"
           iconFlex="right"
-          disable={isDisable}
+          disable={isLoading || isDisable}
           icon={
             <View style={[globalStyles.iconContainer]}>
               <ArrowRight size={18} color={appColors.white} />
