@@ -12,6 +12,13 @@ import ModalLocation from '../modals/ModalLocation';
 //Chọn vị trí ở màn hình AddNewScreen.tsx
 const ChoiceLocation = () => {
   const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false);
+  const [addressSelected, setAddressSelected] = useState<{
+    address: string;
+    position?: {
+      lat: number;
+      long: number;
+    };
+  }>();
 
   return (
     <>
@@ -36,7 +43,11 @@ const ChoiceLocation = () => {
           </View>
         </View>
         <SpaceComponent width={12} />
-        <TextComponent text="NewYork, USA" flex={1} />
+        <TextComponent
+          numOfLine={1}
+          text={addressSelected ? addressSelected.address : 'Choice'}
+          flex={1}
+        />
         <ArrowRight2 color={appColors.primary} size={22} />
       </RowComponent>
 
@@ -44,7 +55,7 @@ const ChoiceLocation = () => {
       <ModalLocation
         visible={isVisibleModalLocation}
         onClose={() => setIsVisibleModalLocation(false)}
-        onSelect={val => console.log(val)}
+        onSelect={val => setAddressSelected(val)}
       />
     </>
   );

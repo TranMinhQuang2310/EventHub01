@@ -40,7 +40,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import GeoLocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import {AddressModel} from '../../models/AddressModel';
+import Geocoder from 'react-native-geocoding';
 
+//Geocoder.init(process.env.MAP_API_KEY as string);
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
 
@@ -49,6 +51,13 @@ const HomeScreen = ({navigation}: any) => {
 
   //Lấy vị trí hiện tại
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
+
+  // useEffect(() => {
+  //   Geocoder.from('Hoàng Hoa Thám').then(position => console.log(position));
+  // }, []);
+
+  // console.log(process.env.MAP_API_KEY);
+
   useEffect(() => {
     GeoLocation.getCurrentPosition(position => {
       if (position.coords) {
@@ -62,7 +71,7 @@ const HomeScreen = ({navigation}: any) => {
     });
   }, []);
 
-  //Hàm lấy vị trí hiện tại
+  //Lấy vị trí hiện tại
   //B1 : Vào trang : https://www.here.com/docs/bundle/geocoding-and-search-api-v7-api-reference/page/index.html#/paths/~1revgeocode/get
   //B2 : Copy link Reverse Geocode
   //B3 : Vào trang : https://platform.here.com/admin/apps

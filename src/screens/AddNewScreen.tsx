@@ -4,8 +4,11 @@ import {
   ButtonComponent,
   ChoiceLocation,
   ContainerComponent,
+  DateTimePicker,
   InputComponent,
+  RowComponent,
   SectionComponent,
+  SpaceComponent,
   TextComponent,
 } from '../components';
 import {useSelector} from 'react-redux';
@@ -33,7 +36,7 @@ const AddNewScreen = () => {
     authorId: auth.id,
   });
 
-  const handleChangeValue = (key: string, value: string) => {
+  const handleChangeValue = (key: string, value: string | Date) => {
     const items = {...eventData};
     items[`${key}`] = value;
 
@@ -49,12 +52,15 @@ const AddNewScreen = () => {
         <TextComponent text="Add New" title />
       </SectionComponent>
       <SectionComponent>
+        {/* Title */}
         <InputComponent
           placeholder="Title"
           value={eventData.title}
           allowClear
           onChange={val => handleChangeValue('title', val)}
         />
+
+        {/* Description */}
         <InputComponent
           placeholder="Description"
           //Cho phép xuống dòng
@@ -65,6 +71,43 @@ const AddNewScreen = () => {
           onChange={val => handleChangeValue('description', val)}
         />
 
+        <RowComponent>
+          {/* startAt */}
+          <DateTimePicker
+            label="Start at :"
+            type="time"
+            onSelect={val => handleChangeValue('startAt', val)}
+            selected={eventData.startAt}
+          />
+          <SpaceComponent width={20} />
+          {/* endAt */}
+          <DateTimePicker
+            label="End at :"
+            type="time"
+            onSelect={val => handleChangeValue('endAt', val)}
+            selected={eventData.endAt}
+          />
+        </RowComponent>
+
+        {/* Date */}
+        <DateTimePicker
+          label="Date :"
+          type="date"
+          onSelect={val => handleChangeValue('date', val)}
+          selected={eventData.date}
+        />
+
+        {/* Title Address */}
+        <InputComponent
+          placeholder="Title Address"
+          allowClear
+          value={eventData.location.title}
+          onChange={val =>
+            handleChangeValue('location', {...eventData.location, title: val})
+          }
+        />
+
+        {/* Map */}
         <ChoiceLocation />
       </SectionComponent>
 
