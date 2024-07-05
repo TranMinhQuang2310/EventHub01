@@ -3,6 +3,8 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import DrawerNavigator from './DrawerNavigator';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Host} from 'react-native-portalize';
 
 //Quản lý toàn bộ giao diện chính
 const MainNavigator = () => {

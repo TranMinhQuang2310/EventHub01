@@ -5,6 +5,7 @@ import ChoiceLocation from './ChoiceLocation';
 import CircleComponent from './CircleComponent';
 import ContainerComponent from './ContainerComponent';
 import DateTimePicker from './DateTimePicker';
+import DropdownPicker from './DropdownPicker';
 import EventItem from './EventItem';
 import InputComponent from './InputComponent';
 import RowComponent from './RowComponent';
@@ -31,4 +32,5 @@ export {
   CardComponent,
   ChoiceLocation,
   DateTimePicker,
+  DropdownPicker,
 };

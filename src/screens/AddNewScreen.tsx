@@ -5,6 +5,7 @@ import {
   ChoiceLocation,
   ContainerComponent,
   DateTimePicker,
+  DropdownPicker,
   InputComponent,
   RowComponent,
   SectionComponent,
@@ -13,6 +14,7 @@ import {
 } from '../components';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../redux/reducers/authReducer';
+import userAPI from '../apis/userAPi';
 
 const initValues = {
   title: '',
@@ -31,6 +33,7 @@ const initValues = {
 
 const AddNewScreen = () => {
   const auth = useSelector(authSelector);
+  //console.log(auth);
   const [eventData, setEventData] = useState<any>({
     ...initValues,
     authorId: auth.id,
@@ -43,8 +46,10 @@ const AddNewScreen = () => {
     setEventData(items);
   };
 
+  //Goi API
   const handleAddEvent = async () => {
-    console.log(eventData);
+    const res = await userAPI.HandleUser('/get-all');
+    console.log(res);
   };
   return (
     <ContainerComponent isScroll>
@@ -95,6 +100,14 @@ const AddNewScreen = () => {
           type="date"
           onSelect={val => handleChangeValue('date', val)}
           selected={eventData.date}
+        />
+
+        {/* Dropdown Picker */}
+        <DropdownPicker
+          label="Invited users"
+          values={[]}
+          onSelect={(val: string) => console.log(val)}
+          selected={undefined}
         />
 
         {/* Title Address */}
