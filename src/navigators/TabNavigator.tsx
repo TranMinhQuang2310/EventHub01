@@ -20,6 +20,8 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
+        //Ẩn thanh bottom tab khi nhập text vào ô Input
+        tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarStyle: {
           height: Platform.OS === 'ios' ? 88 : 68,

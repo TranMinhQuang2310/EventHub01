@@ -21,7 +21,7 @@ const DateTimePicker = (props: Props) => {
   const {selected, type, onSelect, label} = props;
   const [isShowDatePicker, setIsShowDatePicker] = useState(false);
 
-  console.log(selected);
+  //console.log(selected);
 
   return (
     <View style={{flex: 1}}>

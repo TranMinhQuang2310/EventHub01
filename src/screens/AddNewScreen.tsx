@@ -1,5 +1,5 @@
 import {View, Text} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ButtonComponent,
   ChoiceLocation,
@@ -15,6 +15,7 @@ import {
 import {useSelector} from 'react-redux';
 import {authSelector} from '../redux/reducers/authReducer';
 import userAPI from '../apis/userAPi';
+import {SelectModel} from '../models/SelectModel';
 
 const initValues = {
   title: '',
@@ -24,7 +25,7 @@ const initValues = {
     address: '',
   },
   imageUrl: '',
-  users: [''],
+  users: [],
   authorId: '',
   startAt: Date.now(),
   endAt: Date.now(),
@@ -39,14 +40,46 @@ const AddNewScreen = () => {
     authorId: auth.id,
   });
 
-  const handleChangeValue = (key: string, value: string | Date) => {
+  const [usersSelects, setUsersSelects] = useState<SelectModel[]>([]);
+
+  const handleChangeValue = (key: string, value: string | Date | string[]) => {
     const items = {...eventData};
     items[`${key}`] = value;
 
     setEventData(items);
   };
 
-  //Goi API
+  useEffect(() => {
+    handleGetAllUsers();
+  }, []);
+
+  //Goi API sau khi click dropdown 'Invited users'
+  const handleGetAllUsers = async () => {
+    const api = `/get-all`;
+
+    try {
+      const res: any = await userAPI.HandleUser(api);
+
+      if (res && res.data) {
+        const items: SelectModel[] = [];
+
+        res.data.forEach(
+          (item: any) =>
+            item.email &&
+            items.push({
+              label: item.email,
+              value: item.id,
+            }),
+        );
+
+        setUsersSelects(items);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //Gọi API sau khi click button 'Add New'
   const handleAddEvent = async () => {
     const res = await userAPI.HandleUser('/get-all');
     console.log(res);
@@ -105,9 +138,13 @@ const AddNewScreen = () => {
         {/* Dropdown Picker */}
         <DropdownPicker
           label="Invited users"
-          values={[]}
-          onSelect={(val: string) => console.log(val)}
-          selected={undefined}
+          values={usersSelects}
+          onSelect={(val: string | string[]) =>
+            handleChangeValue('users', val as string[])
+          }
+          selected={eventData.users}
+          //Cho phép chọn nhiều
+          multible
         />
 
         {/* Title Address */}
