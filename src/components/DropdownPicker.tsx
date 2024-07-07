@@ -15,6 +15,7 @@ import {fontFamilies} from '../constants/fontFamilies';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+//Chọn Dropdown Picker ở màn hình AddNewScreen.tsx
 interface Props {
   label?: string;
   values: SelectModel[];
@@ -74,7 +75,12 @@ const DropdownPicker = (props: Props) => {
 
     return item ? (
       <RowComponent key={id} styles={[localStyles.selectedItem]}>
-        <TextComponent text={item.label} color={appColors.primary} />
+        <TextComponent
+          text={`${
+            item.label.includes('@') ? item.label.split('@')[0] : item.label
+          }`}
+          color={appColors.primary}
+        />
         <SpaceComponent width={8} />
         <TouchableOpacity
           onPress={() => {
@@ -135,7 +141,7 @@ const DropdownPicker = (props: Props) => {
     <View style={{marginBottom: 8}}>
       {label && <TextComponent text={label} styles={{marginBottom: 8}} />}
       <RowComponent
-        styles={[globalStyles.inputContainer]}
+        styles={[globalStyles.inputContainer, {alignItems: 'flex-start'}]}
         onPress={() => setIsVisibleModalize(true)}>
         <RowComponent styles={{flex: 1, flexWrap: 'wrap'}}>
           {selectedItems.length > 0 ? (

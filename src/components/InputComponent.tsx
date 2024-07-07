@@ -104,6 +104,7 @@ const InputComponent = (props: Props) => {
           />
         ) : (
           //Nếu có dữ liệu nhập vào => Hiển thị icon "X"
+          value &&
           value.length > 0 &&
           allowClear && (
             <AntDesign name="close" size={32} color={appColors.text} />

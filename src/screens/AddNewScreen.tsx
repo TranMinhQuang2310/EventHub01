@@ -1,7 +1,8 @@
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   ButtonComponent,
+  ButtonImagePicker,
   ChoiceLocation,
   ContainerComponent,
   DateTimePicker,
@@ -49,6 +50,8 @@ const AddNewScreen = () => {
     setEventData(items);
   };
 
+  const [fileSelected, setFileSelected] = useState<any>();
+
   useEffect(() => {
     handleGetAllUsers();
   }, []);
@@ -81,8 +84,9 @@ const AddNewScreen = () => {
 
   //Gọi API sau khi click button 'Add New'
   const handleAddEvent = async () => {
-    const res = await userAPI.HandleUser('/get-all');
-    console.log(res);
+    // const res = await userAPI.HandleUser('/get-all');
+    // console.log(res);
+    console.log(eventData);
   };
   return (
     <ContainerComponent isScroll>
@@ -90,6 +94,27 @@ const AddNewScreen = () => {
         <TextComponent text="Add New" title />
       </SectionComponent>
       <SectionComponent>
+        {/* Image sau khi được upload */}
+        {eventData.photoUrl || fileSelected ? (
+          <Image
+            source={{
+              uri: eventData.photoUrl ? eventData.photoUrl : fileSelected.uri,
+            }}
+            style={{width: '100%', height: 250}}
+            resizeMode="cover"
+          />
+        ) : (
+          <></>
+        )}
+        {/* Upload Image */}
+        <ButtonImagePicker
+          onSelect={val =>
+            val.type === 'url'
+              ? handleChangeValue('photoUrl', val.value as string)
+              : setFileSelected(val.value)
+          }
+        />
+
         {/* Title */}
         <InputComponent
           placeholder="Title"
@@ -159,6 +184,15 @@ const AddNewScreen = () => {
 
         {/* Map */}
         <ChoiceLocation />
+
+        {/* Price */}
+        <InputComponent
+          placeholder="Price"
+          allowClear
+          type="number-pad"
+          value={eventData.price}
+          onChange={val => handleChangeValue('price', val)}
+        />
       </SectionComponent>
 
       <SectionComponent>
