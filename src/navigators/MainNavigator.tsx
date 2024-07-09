@@ -5,6 +5,7 @@ import TabNavigator from './TabNavigator';
 import DrawerNavigator from './DrawerNavigator';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Host} from 'react-native-portalize';
+import {EventDetail} from '../screens';
 
 //Quản lý toàn bộ giao diện chính
 const MainNavigator = () => {
@@ -17,6 +18,7 @@ const MainNavigator = () => {
       }}>
       {/* Bọc DrawerNavigator ở ngoài toàn bộ màn hình */}
       <Stack.Screen name="Main" component={DrawerNavigator} />
+      <Stack.Screen name="EventDetail" component={EventDetail} />
     </Stack.Navigator>
   );
 };

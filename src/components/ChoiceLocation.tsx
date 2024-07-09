@@ -9,8 +9,14 @@ import CardComponent from './CardComponent';
 import SpaceComponent from './SpaceComponent';
 import ModalLocation from '../modals/ModalLocation';
 
+interface Props {
+  onSelect: (val: any) => void;
+}
+
 //Chọn vị trí ở màn hình AddNewScreen.tsx
-const ChoiceLocation = () => {
+const ChoiceLocation = (props: Props) => {
+  const {onSelect} = props;
+
   const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false);
   const [addressSelected, setAddressSelected] = useState<{
     address: string;
@@ -55,7 +61,10 @@ const ChoiceLocation = () => {
       <ModalLocation
         visible={isVisibleModalLocation}
         onClose={() => setIsVisibleModalLocation(false)}
-        onSelect={val => setAddressSelected(val)}
+        onSelect={val => {
+          setAddressSelected(val);
+          onSelect(val);
+        }}
       />
     </>
   );

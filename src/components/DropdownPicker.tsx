@@ -33,7 +33,7 @@ const DropdownPicker = (props: Props) => {
   const modalieRef = useRef<Modalize>();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  console.log(selected);
+  //console.log(selected);
 
   useEffect(() => {
     //Trường hợp Modalize được mở
@@ -44,10 +44,10 @@ const DropdownPicker = (props: Props) => {
 
   useEffect(() => {
     //Trường hợp Modalize được mở và đã chọn item
-    if (isVisibleModalize && selected && selected?.length > 0) {
-      setSelectedItems(selected as string[]);
+    if (isVisibleModalize && selected) {
+      setSelectedItems(multible ? (selected as string[]) : []);
     }
-  }, [isVisibleModalize, selected]);
+  }, [isVisibleModalize, selected, multible]);
 
   const handleSelectItem = (id: string) => {
     if (selectedItems.includes(id)) {
@@ -102,7 +102,10 @@ const DropdownPicker = (props: Props) => {
         onPress={
           multible
             ? () => handleSelectItem(item.value)
-            : () => onSelect(item.value)
+            : () => {
+                onSelect(item.value);
+                modalieRef.current?.close();
+              }
         }
         key={item.value}
         styles={[localStyles.listItem]}>
@@ -144,8 +147,17 @@ const DropdownPicker = (props: Props) => {
         styles={[globalStyles.inputContainer, {alignItems: 'flex-start'}]}
         onPress={() => setIsVisibleModalize(true)}>
         <RowComponent styles={{flex: 1, flexWrap: 'wrap'}}>
-          {selectedItems.length > 0 ? (
-            selectedItems.map(item => renderSelectedItem(item))
+          {selected ? (
+            selectedItems.length > 0 ? (
+              selectedItems.map(item => renderSelectedItem(item))
+            ) : (
+              <TextComponent
+                text={
+                  values.find(element => element.value === selected)?.label ??
+                  ''
+                }
+              />
+            )
           ) : (
             <TextComponent text="Select" />
           )}

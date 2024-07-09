@@ -17,20 +17,27 @@ import {useSelector} from 'react-redux';
 import {authSelector} from '../redux/reducers/authReducer';
 import userAPI from '../apis/userAPi';
 import {SelectModel} from '../models/SelectModel';
+import {ImageOrVideo} from 'react-native-image-crop-picker';
+import {Validate} from '../utils/validate';
+import {appColors} from '../constants/appColors';
 
 const initValues = {
   title: '',
   description: '',
-  location: {
-    title: '',
-    address: '',
+  locationTitle: '',
+  locationAddress: '',
+  position: {
+    lat: '',
+    long: '',
   },
-  imageUrl: '',
+  photoUrl: '',
   users: [],
   authorId: '',
   startAt: Date.now(),
   endAt: Date.now(),
   date: Date.now(),
+  price: '',
+  category: '',
 };
 
 const AddNewScreen = () => {
@@ -42,6 +49,19 @@ const AddNewScreen = () => {
   });
 
   const [usersSelects, setUsersSelects] = useState<SelectModel[]>([]);
+  const [fileSelected, setFileSelected] = useState<any>();
+  const [errorMess, setErrorMess] = useState<string[]>([]);
+
+  useEffect(() => {
+    handleGetAllUsers();
+  }, []);
+
+  //Mỗi lần có dữ liệu được nhập vào => Thực hiện validate
+  useEffect(() => {
+    const mess = Validate.EventValidation(eventData);
+
+    setErrorMess(mess);
+  }, [eventData]);
 
   const handleChangeValue = (key: string, value: string | Date | string[]) => {
     const items = {...eventData};
@@ -49,12 +69,6 @@ const AddNewScreen = () => {
 
     setEventData(items);
   };
-
-  const [fileSelected, setFileSelected] = useState<any>();
-
-  useEffect(() => {
-    handleGetAllUsers();
-  }, []);
 
   //Goi API sau khi click dropdown 'Invited users'
   const handleGetAllUsers = async () => {
@@ -88,6 +102,22 @@ const AddNewScreen = () => {
     // console.log(res);
     console.log(eventData);
   };
+
+  //Handle file được chọn
+  const handleFileSelected = (val: ImageOrVideo) => {
+    //Sau khi chọn file từ library hoặc chụp hình => thay thế hình đã chọn trước đó
+    setFileSelected(val);
+    handleChangeValue('photoUrl', val.path);
+  };
+
+  //Handle vị trí được chọn
+  const handleLocation = (val: any) => {
+    const items = {...eventData};
+    items.position = val.position;
+    items.locationAddress = val.address;
+
+    setEventData(items);
+  };
   return (
     <ContainerComponent isScroll>
       <SectionComponent>
@@ -108,10 +138,10 @@ const AddNewScreen = () => {
         )}
         {/* Upload Image */}
         <ButtonImagePicker
-          onSelect={val =>
+          onSelect={(val: any) =>
             val.type === 'url'
               ? handleChangeValue('photoUrl', val.value as string)
-              : setFileSelected(val.value)
+              : handleFileSelected(val.value)
           }
         />
 
@@ -132,6 +162,30 @@ const AddNewScreen = () => {
           allowClear
           value={eventData.description}
           onChange={val => handleChangeValue('description', val)}
+        />
+
+        {/* Category */}
+        <DropdownPicker
+          selected={eventData.category}
+          values={[
+            {
+              label: 'Sport',
+              value: 'sport',
+            },
+            {
+              label: 'Food',
+              value: 'food',
+            },
+            {
+              label: 'Art',
+              value: 'art',
+            },
+            {
+              label: 'Music',
+              value: 'music',
+            },
+          ]}
+          onSelect={val => handleChangeValue('category', val)}
         />
 
         <RowComponent>
@@ -176,14 +230,12 @@ const AddNewScreen = () => {
         <InputComponent
           placeholder="Title Address"
           allowClear
-          value={eventData.location.title}
-          onChange={val =>
-            handleChangeValue('location', {...eventData.location, title: val})
-          }
+          value={eventData.locationTitle}
+          onChange={val => handleChangeValue('locationTitle', val)}
         />
 
         {/* Map */}
-        <ChoiceLocation />
+        <ChoiceLocation onSelect={val => handleLocation(val)} />
 
         {/* Price */}
         <InputComponent
@@ -195,8 +247,25 @@ const AddNewScreen = () => {
         />
       </SectionComponent>
 
+      {/* Thông báo validate */}
+      {errorMess.length > 0 && (
+        <SectionComponent>
+          {errorMess.map(mess => (
+            <TextComponent
+              text={mess}
+              key={mess}
+              color={appColors.danger}
+              styles={{marginBottom: 12}}
+            />
+          ))}
+        </SectionComponent>
+      )}
+
+      {/* Button Add New */}
       <SectionComponent>
         <ButtonComponent
+          //Khi nào có dữ liệu được nhập => enable button Add
+          disable={errorMess.length > 0}
           text="Add New"
           onPress={handleAddEvent}
           type="primary"
