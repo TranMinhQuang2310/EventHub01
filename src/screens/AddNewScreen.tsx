@@ -20,6 +20,9 @@ import {SelectModel} from '../models/SelectModel';
 import {ImageOrVideo} from 'react-native-image-crop-picker';
 import {Validate} from '../utils/validate';
 import {appColors} from '../constants/appColors';
+import storage from '@react-native-firebase/storage';
+import {EventModel} from '../models/EventModel';
+import eventAPI from '../apis/eventAPi';
 
 const initValues = {
   title: '',
@@ -40,7 +43,7 @@ const initValues = {
   category: '',
 };
 
-const AddNewScreen = () => {
+const AddNewScreen = ({navigation}: any) => {
   const auth = useSelector(authSelector);
   //console.log(auth);
   const [eventData, setEventData] = useState<any>({
@@ -98,9 +101,59 @@ const AddNewScreen = () => {
 
   //Gọi API sau khi click button 'Add New'
   const handleAddEvent = async () => {
-    // const res = await userAPI.HandleUser('/get-all');
-    // console.log(res);
-    console.log(eventData);
+    if (fileSelected) {
+      //Nếu là file => Cắt tên fileName
+      const filename = `${fileSelected.filename ?? `image-${Date.now()}`}.${
+        fileSelected.path.split('.')[1]
+      }`;
+      //console.log(filename);
+
+      //Đường dẫn đến Storage trên FireBase
+      const path = `image/${filename}`;
+
+      const res = storage().ref(path).putFile(fileSelected.path);
+
+      res.on(
+        'state_changed',
+        snap => {
+          //Xem dung lượng file được bao nhiêu GB
+          console.log(snap.bytesTransferred);
+        },
+        error => {
+          console.log(error);
+        },
+        () => {
+          //Kiểm tra đường dẫn url trước khi push lên Storage của Firebase
+          storage()
+            .ref(path)
+            .getDownloadURL()
+            .then(url => {
+              eventData.photoUrl = url;
+              //Nếu đúng đường dẫn url => gọi tới hàm push lên Storage của Firebase
+              handlePushEvent(eventData);
+            });
+        },
+      );
+    } else {
+      //Nếu là Url
+      handlePushEvent(eventData);
+    }
+  };
+
+  const handlePushEvent = async (event: EventModel) => {
+    //console.log(event);
+
+    const api = `/add-new`;
+    try {
+      const res = await eventAPI.HandleEvent(api, event, 'post');
+      navigation.navigate('Explore', {
+        screen: 'HomeScreen',
+      });
+
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //Handle file được chọn

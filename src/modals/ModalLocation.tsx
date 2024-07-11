@@ -65,7 +65,9 @@ const ModalLocation = (props: Props) => {
           });
         }
       },
-      error => console.log(error),
+      error => {
+        console.log(error), {};
+      },
     );
   }, []);
 
@@ -121,6 +123,33 @@ const ModalLocation = (props: Props) => {
   };
 
   //console.log(locations);
+
+  //Lấy lat,long từ vị trí được chọn trên map sau đó chuyển thành tên địa chỉ
+  const handleGetAddressFromPosition = ({
+    latitude,
+    longitude,
+  }: {
+    latitude: number;
+    longitude: number;
+  }) => {
+    //Lấy lat,long sau khi click vị trí trên map
+    onSelect({
+      address: 'This is demo address',
+      position: {
+        lat: latitude,
+        long: longitude,
+      },
+    });
+    //Đóng Modal sau khi chọn
+    onClose();
+    //Chuyển lat,long từ vị trí được chọn trên map sau đó chuyển thành tên địa chỉ
+    Geocoder.from(latitude, longitude)
+      .then(data => {
+        console.log(data);
+        console.log(data.results[0].address_components[0]);
+      })
+      .catch(error => console.log(error));
+  };
 
   return (
     //animationType="slide" => Open Modal từ dưới lên
@@ -197,6 +226,10 @@ const ModalLocation = (props: Props) => {
               latitudeDelta: 0.0922,
               longitudeDelta: 0.0421,
             }}
+            //Lấy lat,long từ vị trí được chọn trên map sau đó chuyển thành tên địa chỉ
+            onPress={event =>
+              handleGetAddressFromPosition(event.nativeEvent.coordinate)
+            }
             region={{
               latitude: currentLocation.lat,
               longitude: currentLocation.long,
