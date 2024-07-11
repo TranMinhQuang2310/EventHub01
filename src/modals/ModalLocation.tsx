@@ -213,7 +213,7 @@ const ModalLocation = (props: Props) => {
           <MapView
             style={{
               width: appInfo.sizes.WIDTH,
-              height: 500,
+              height: appInfo.sizes.HEIGHT - 300,
               marginVertical: 58,
               zIndex: -1,
             }}
