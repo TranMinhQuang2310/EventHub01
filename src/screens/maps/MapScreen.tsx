@@ -7,6 +7,7 @@ import {
   CardComponent,
   CategoriesList,
   InputComponent,
+  MakerCustom,
   RowComponent,
   SpaceComponent,
   TextComponent,
@@ -16,6 +17,8 @@ import {appColors} from '../../constants/appColors';
 import {globalStyles} from '../../styles/globalStyles';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {KnifeFork_Color} from '../../assets/svgs';
+import eventAPI from '../../apis/eventAPi';
+import {EventModel} from '../../models/EventModel';
 
 const MapScreen = ({navigation}: any) => {
   //Lấy vị trí hiện tại
@@ -23,6 +26,8 @@ const MapScreen = ({navigation}: any) => {
     lat: number;
     long: number;
   }>();
+
+  const [events, setEvents] = useState<EventModel[]>([]);
 
   useEffect(() => {
     GeoLocation.getCurrentPosition(
@@ -40,6 +45,28 @@ const MapScreen = ({navigation}: any) => {
       },
     );
   }, []);
+
+  //Gọi API lấy những Event ở gần
+  useEffect(() => {
+    currentLocation && getNearbyEvents();
+  }, [currentLocation]);
+
+  //Viết API lấy những Event ở gần
+  const getNearbyEvents = async () => {
+    //distance là khoảng cách (tính theo km)
+    const api = `/get-events?lat=${currentLocation?.lat}&long=${
+      currentLocation?.long
+    }&distance=${5}`;
+
+    try {
+      const res = await eventAPI.HandleEvent(api);
+
+      setEvents(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle={'dark-content'} />
@@ -69,25 +96,20 @@ const MapScreen = ({navigation}: any) => {
           //Kiểu map
           mapType="standard">
           {/* Marker đánh dấu vị trí đã chọn trên bản đồ */}
-          <Marker
-            title="fafa"
-            description="fafa"
-            onPress={() => console.log('aaa')}
-            coordinate={{
-              latitude: currentLocation.lat,
-              longitude: currentLocation.long,
-            }}>
-            <View
-              style={{
-                padding: 12,
-                backgroundColor: appColors.white,
-                borderRadius: 12,
-                width: 56,
-                height: 56,
-              }}>
-              <KnifeFork_Color />
-            </View>
-          </Marker>
+          {events.length > 0 &&
+            events.map((event, index) => (
+              <Marker
+                key={`event${index}`}
+                title={event.title}
+                description=""
+                onPress={() => console.log('aaa')}
+                coordinate={{
+                  latitude: event.position.lat,
+                  longitude: event.position.long,
+                }}>
+                <MakerCustom type={event.category} onPress={() => {}} />
+              </Marker>
+            ))}
         </MapView>
       ) : (
         <></>
@@ -127,6 +149,7 @@ const MapScreen = ({navigation}: any) => {
           <SpaceComponent width={12} />
           {/* Icon location*/}
           <CardComponent
+            onPress={() => getNearbyEvents()}
             styles={[globalStyles.noSpaceCard, {width: 56, height: 56}]}
             color={appColors.white}>
             <MaterialIcons

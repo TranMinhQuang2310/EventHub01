@@ -140,6 +140,7 @@ const AddNewScreen = ({navigation}: any) => {
     }
   };
 
+  //Viết API Add New Event
   const handlePushEvent = async (event: EventModel) => {
     //console.log(event);
 
