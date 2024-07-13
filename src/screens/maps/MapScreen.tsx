@@ -1,4 +1,4 @@
-import {View, Text, StatusBar, TouchableOpacity} from 'react-native';
+import {View, Text, StatusBar, TouchableOpacity, FlatList} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import {appInfo} from '../../constants/appInfos';
@@ -6,6 +6,7 @@ import GeoLocation from '@react-native-community/geolocation';
 import {
   CardComponent,
   CategoriesList,
+  EventItem,
   InputComponent,
   MakerCustom,
   RowComponent,
@@ -107,7 +108,7 @@ const MapScreen = ({navigation}: any) => {
                   latitude: event.position.lat,
                   longitude: event.position.long,
                 }}>
-                <MakerCustom type={event.category} onPress={() => {}} />
+                <MakerCustom type={event.category} />
               </Marker>
             ))}
         </MapView>
@@ -163,6 +164,23 @@ const MapScreen = ({navigation}: any) => {
 
         {/* 4 tag */}
         <CategoriesList />
+      </View>
+
+      {/* Thanh slide */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          left: 0,
+          right: 0,
+        }}>
+        <FlatList
+          initialScrollIndex={0}
+          data={events}
+          renderItem={({item}) => <EventItem item={item} type="list" />}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
     </View>
   );
